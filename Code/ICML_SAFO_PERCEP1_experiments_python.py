@@ -67,7 +67,7 @@ torch.manual_seed(sd)
 
 hh = np.loadtxt(os.path.join(path1,"xc.txt"))
 
-abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":{},"data":{}})#,device=device
+abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":{},"da":{}})#,device=device
 ax_client = AxClient(generation_strategy = abo_strategy, torch_device=device)
 ax_client.create_experiment(
     name="sc_evaluation_function",
@@ -244,7 +244,7 @@ mo = []
 
 torch.manual_seed(sd)
 
-abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":vae,"data":train_data})#,device=device
+abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":vae,"da":train_data})#,device=device
 print(f"experiment start")
 best_parameters, values, experiment, model = optimize(
     parameters=parameters,

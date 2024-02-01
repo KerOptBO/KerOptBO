@@ -1,7 +1,7 @@
 # Evaluation Parameters
 In our experiments, we have:
 
-- We have three volunteers $U1,U2,U3$
+- We have three volunteers $U1-6$
 
 - $f\_{evals} = 25$ function evaluations
 

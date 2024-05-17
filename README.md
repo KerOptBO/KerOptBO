@@ -9,3 +9,7 @@
  - Pre-Trained <a href="https://github.com/tcl9876/visual-vae/tree/master">VAE</a> trained on the Imagenet dataset. 
  
 	- Visual VAE is licensed under <a href="https://github.com/KerOptBO/KerOptBO/blob/main/LICENSE_VAE.txt">MIT license</a>
+	
+ - <a href="https://github.com/Stability-AI/stablediffusion">Stable Diffusion</a> Image Generator
+	
+	- The image generator is licensed under <a href="https://github.com/KerOptBO/KerOptBO/blob/main/LICENSE_SD.txt">MIT license</a>

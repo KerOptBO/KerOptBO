@@ -30,6 +30,7 @@ from ax.service.managed_loop import optimize
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 sd = 42
+
 random.seed(sd)
 
 D = 2000
@@ -43,16 +44,16 @@ batch_size = 128
 
 cnt = 0
 
-path1 = "ICML_2024/synthetic/P1/MCMC"
+path1 = "NIPS_2024/synthetic/ROSENBROCK/MCMC"
 path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_seed{sd}")
 os.mkdir(path)
 
 def sc_evaluation_function(parameterization):
     x = np.array(list(parameterization.items()))[:,1].astype(float)
-    score_func = 0
-    for i in range(D):
-        score_func += math.floor(abs(x[i] + 0.5))**2
-    return {"objective": (score_func, 0.0)}
+    rosen = 0
+    for i in range(D-1):
+        rosen += 100*((x[i+1] - x[i]**2)**2) + (x[i] - 1)**2
+    return {"objective": (rosen, 0.0)}
 
 parameters = [
     {"name": "x0", "type": "range", "bounds": [-10, 10.0], "value_type": "float"},
@@ -164,6 +165,8 @@ d = MCMC(density, chain = 10, jumpdist=scipy.stats.norm(loc=0,scale=2), space = 
 res = d.metropolis(chain=100, seed = sd)
 
 abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"mcmc":res})#,device=device
+
+
 print(f"experiment start")
 best_parameters, values, experiment, model = optimize(
     parameters=parameters,

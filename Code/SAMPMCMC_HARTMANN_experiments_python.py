@@ -29,9 +29,8 @@ from ax.service.managed_loop import optimize
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-sd = 42
 
-random.seed(sd)
+sd = 42
 
 D = 2000
 d = 20
@@ -44,16 +43,16 @@ batch_size = 128
 
 cnt = 0
 
-path1 = "ICML_2024/synthetic/P2/MCMC"
+random.seed(sd)
+
+path1 = "NIPS_2024/synthetic/HARTMANN/MCMC"
 path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_seed{sd}")
 os.mkdir(path)
 
 def sc_evaluation_function(parameterization):
     x = np.array(list(parameterization.items()))[:,1].astype(float)
-    score_func = 0
-    for i in range(D):
-        score_func += math.floor((x[i])**2)
-    return {"objective": (score_func, 0.0)}
+
+    return {"objective": (hartmann6(x[0:6]), 0.0)}
 
 parameters = [
     {"name": "x0", "type": "range", "bounds": [-10, 10.0], "value_type": "float"},

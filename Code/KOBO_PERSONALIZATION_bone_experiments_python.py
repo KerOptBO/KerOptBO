@@ -27,10 +27,13 @@ from ax.service.managed_loop import optimize
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+
+
 sd = 42
+
 random.seed(sd)
 
-D = 2000
+D = 513
 d = 20
 tri = 50
 r_init = 5
@@ -41,16 +44,36 @@ batch_size = 128
 
 cnt = 0
 
-path1 = "ICML_2024/synthetic/P1"
-path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_seed{sd}")
+path1 = "NIPS_2024/personalization/bone"
+path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_usr{usr}_music{muu}")
 os.mkdir(path)
 
 def sc_evaluation_function(parameterization):
+    global cnt
     x = np.array(list(parameterization.items()))[:,1].astype(float)
-    score_func = 0
-    for i in range(D):
-        score_func += math.floor(abs(x[i] + 0.5))**2
+    
+    np.savetxt(os.path.join(path,"h.txt"),x)
+    score_call()
+    score_func = float(input())
+    cnt = cnt + 1
+    os.rename(os.path.join(path,"h.txt"),os.path.join(path,f"h{cnt}.txt"))
+    
     return {"objective": (score_func, 0.0)}
+
+def score_call():
+    #np.random.seed(1234)
+    bb = random.sample(range(10,25), 9)
+    cc = random.sample(range(2,10), 6)
+    #bb = []
+    dat, fs = load(os.path.join(path1,"test_filts.wav"))
+    sig_fft = stft(dat,n_fft=2*(D-1))
+    w = np.loadtxt(os.path.join(path,"h.txt"))
+    melfb = mel_frequencies(n_mels=D,fmax=fs/2)
+    hh = np.interp(np.arange(0,D)/(D-1)*(fs/2), melfb, w)
+    r = 10**(hh/10)
+    fil = istft((sig_fft.T * r).T)
+    wavfile.write(os.path.join(path,f"out{cnt+1}.wav"), fs, fil.astype(dat.dtype))
+    display(Audio(fil.astype(dat.dtype),rate=fs))
 
 parameters = [
     {"name": "x0", "type": "range", "bounds": [-10, 10.0], "value_type": "float"},
@@ -67,7 +90,7 @@ torch.manual_seed(sd)
 
 hh = np.loadtxt(os.path.join(path1,"xc.txt"))
 
-abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":{},"da":{}})#,device=device
+abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":{},"data":{}})#,device=device
 ax_client = AxClient(generation_strategy = abo_strategy, torch_device=device)
 ax_client.create_experiment(
     name="sc_evaluation_function",
@@ -244,7 +267,7 @@ mo = []
 
 torch.manual_seed(sd)
 
-abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":vae,"da":train_data})#,device=device
+abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"vae":vae,"data":train_data})#,device=device
 print(f"experiment start")
 best_parameters, values, experiment, model = optimize(
     parameters=parameters,

@@ -27,14 +27,11 @@ from ax.service.managed_loop import optimize
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-
-
 sd = 42
-
 random.seed(sd)
 
-D = 2000
-d = 20
+D = 1
+d = 1
 tri = 50
 r_init = 5
 usr = 1
@@ -44,18 +41,19 @@ batch_size = 128
 
 cnt = 0
 
-path1 = "ICML_2024/synthetic/BRANIN"
-path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_seed{sd}")
+path1 = "NIPS_2024/emission"
+path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_usr{usr}_music{muu}")
 os.mkdir(path)
 
 def sc_evaluation_function(parameterization):
+    global cnt
     x = np.array(list(parameterization.items()))[:,1].astype(float)
-    b1 = 5.1 / (4 * math.pi ** 2) 
-    c1 = 5 / math.pi
-    r1 = 6
-    t1 = 1 / (8 * math.pi)
-    score_func = (x[1] - b1*(x[0]**2) + c1*x[0] - r1)**2 + 10*(1-t1)*(math.cos(x[0])) + 10
+    
+    jj = np.loadcsv("emission.csv")
+    score_func = jj[x]
+    
     return {"objective": (score_func, 0.0)}
+
 
 parameters = [
     {"name": "x0", "type": "range", "bounds": [-10, 10.0], "value_type": "float"},

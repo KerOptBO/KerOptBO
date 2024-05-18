@@ -19,6 +19,7 @@ import torch.nn.functional as F
 import torch.utils
 import torch.distributions
 import torchvision
+import numpy as np
 from scipy.special import beta
 import scipy.stats
 from ax.modelbridge.strategies.alebo import ALEBOStrategy
@@ -28,6 +29,8 @@ import torch
 from ax.service.managed_loop import optimize
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+
 
 sd = 42
 
@@ -44,16 +47,18 @@ batch_size = 128
 
 cnt = 0
 
-path1 = "ICML_2024/synthetic/ROSENBROCK/MCMC"
+path1 = "NIPS_2024/synthetic/BRANIN/MCMC"
 path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_seed{sd}")
 os.mkdir(path)
 
 def sc_evaluation_function(parameterization):
     x = np.array(list(parameterization.items()))[:,1].astype(float)
-    rosen = 0
-    for i in range(D-1):
-        rosen += 100*((x[i+1] - x[i]**2)**2) + (x[i] - 1)**2
-    return {"objective": (rosen, 0.0)}
+    b1 = 5.1 / (4 * math.pi ** 2) 
+    c1 = 5 / math.pi
+    r1 = 6
+    t1 = 1 / (8 * math.pi)
+    score_func = (x[1] - b1*(x[0]**2) + c1*x[0] - r1)**2 + 10*(1-t1)*(math.cos(x[0])) + 10
+    return {"objective": (score_func, 0.0)}
 
 parameters = [
     {"name": "x0", "type": "range", "bounds": [-10, 10.0], "value_type": "float"},
@@ -165,8 +170,6 @@ d = MCMC(density, chain = 10, jumpdist=scipy.stats.norm(loc=0,scale=2), space = 
 res = d.metropolis(chain=100, seed = sd)
 
 abo_strategy = ALEBOStrategy(D=D, d=d, init_size=r_init,gp_kwargs={"mcmc":res})#,device=device
-
-
 print(f"experiment start")
 best_parameters, values, experiment, model = optimize(
     parameters=parameters,

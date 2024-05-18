@@ -56,7 +56,7 @@ batch_size = 128
 
 cnt = 0
 
-path1 = "ICML_2024/personalization/images"
+path1 = "NIPS_2024/personalization/images"
 path = os.path.join(path1,f"exp_D{D}_d{d}_tri{tri}_usr{usr}")
 os.mkdir(path)
 

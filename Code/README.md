@@ -11,12 +11,12 @@
 
 
 ## Reference:
- - Compositional Kernel Search(<a href="https://github.com/jamesrobertlloyd/gp-structure-search/tree/master">CKS</a>) 
+ - Compositional Kernel Search(<a href="https://github.com/jamesrobertlloyd/gp-structure-search/tree/master">CKS</a>). 
  
 	- CKS is licensed under <a href="https://github.com/jamesrobertlloyd/gp-structure-search/blob/master/license.txt">MIT license</a>
  
  
- - Bayesian Optimization for automated Model Selection  <a href="https://github.com/gustavomalkomes/automated_model_selection">BOMS</a> 
+ - Bayesian Optimization for automated Model Selection  (<a href="https://github.com/gustavomalkomes/automated_model_selection">BOMS</a>). 
  
 	- BOMS is licensed under <a href="https://github.com/gustavomalkomes/automated_model_selection/blob/master/LICENSE">MIT license</a>
 	
